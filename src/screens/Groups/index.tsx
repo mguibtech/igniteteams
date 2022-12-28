@@ -5,6 +5,7 @@ import { Header } from "@components/Header";
 import { Highlight } from "@components/Highight";
 import { Container } from "./styles";
 import { ListEmpty } from "@components/ListEmpty";
+import { Button } from "@components/Button";
 
 export function Groups() {
 
@@ -32,6 +33,10 @@ export function Groups() {
                         mensage="Lista vazia. Cadastre uma nova turma!"
                     />
                 )}
+            />
+
+            <Button 
+                title="Criar nova turma"
             />
 
         </Container>
