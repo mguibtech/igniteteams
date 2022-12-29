@@ -1,15 +1,20 @@
+import { useState } from "react";
+import { FlatList } from "react-native";
+
 import { ButtonIcon } from "@components/ButtonIcon";
 import { Fillter } from "@components/Fillter";
 import { Header } from "@components/Header";
 import { Highlight } from "@components/Highight";
 import { Input } from "@components/Input";
-import { useState } from "react";
-import { FlatList } from "react-native";
+import { ListEmpty } from "@components/ListEmpty";
+import { PlayerCard } from "@components/PlayerCard";
+
 import { Container, Form, HeaderList, NumberOfPlayers } from "./styles";
+import { Button } from "@components/Button";
 
 export function Players() {
     const [team, setTeam] = useState('Time A')
-    const [players, setPlayers] = useState(['Guibson'])
+    const [players, setPlayers] = useState(['Guibson', 'Vini', 'Ana', 'Heber', 'Vitoria', 'Diego'])
 
     return (
         <Container>
@@ -33,11 +38,11 @@ export function Players() {
                     data={['Time A', 'Time B']}
                     keyExtractor={item => item}
                     renderItem={({ item }) => (
-                    <Fillter
-                        title={item}
-                        isActive = {item === team}
-                        onPress={() => setTeam(item)}
-                    />)}
+                        <Fillter
+                            title={item}
+                            isActive={item === team}
+                            onPress={() => setTeam(item)}
+                        />)}
                     horizontal
                 />
 
@@ -46,7 +51,31 @@ export function Players() {
                 </NumberOfPlayers>
             </HeaderList>
 
-            
+            <FlatList
+                data={players}
+                keyExtractor={item => item}
+                renderItem={({ item }) => (
+                    <PlayerCard
+                        name={item}
+                        onRemove={() => { }}
+                    />
+                )}
+                ListEmptyComponent={() => (
+                    <ListEmpty
+                        mensage="Não há pessoas nesse time."
+                    />
+                )}
+                showsVerticalScrollIndicator={false}
+                contentContainerStyle={[
+                    {paddingBottom: 100},
+                    players.length === 0 && {flex: 1}
+                ]}
+            />
+
+            <Button
+                title="Remover Turma"
+                type="SECONDARY"
+            />
         </Container>
     )
 }
