@@ -1,5 +1,5 @@
-import { useState, useEffect } from "react";
-import { Alert, FlatList } from "react-native";
+import { useState, useEffect, useRef } from "react";
+import { Alert, FlatList, TextInput, Keyboard } from "react-native";
 
 import { ButtonIcon } from "@components/ButtonIcon";
 import { Fillter } from "@components/Fillter";
@@ -17,6 +17,7 @@ import { playerAddByGroup } from "@storage/player/playerAddByGroup";
 import { playersGetByGroup } from "@storage/player/playersGetByGroup";
 import { playersGetByGroupAndTeam } from "@storage/player/playerGetByGroupAndTeam";
 import { PlayerStorageDTO } from "@storage/player/PlayerStorageDTO";
+import { playerRemoveByGroup } from "@storage/player/playerRemoveByGroup";
 
 type RouteParams = {
     group: string;
@@ -30,6 +31,8 @@ export function Players() {
     const route = useRoute();
     const { group } = route.params as RouteParams
 
+    const newPlayerNameInputRef = useRef<TextInput>(null)
+
     async function handleAddPlayer() {
         if (newPlayerName.trim().length === 0) {
             return Alert.alert('Nova pessoa', 'Informe o nome da pessoa para adicionar!')
@@ -42,6 +45,11 @@ export function Players() {
 
         try {
             await playerAddByGroup(newPLayer, group)
+
+            newPlayerNameInputRef.current?.blur()
+            Keyboard.dismiss();
+
+            setNewPlayerName('')
             fetchPlayersByTeam();
         } catch (error) {
             if (error instanceof AppError) {
@@ -63,6 +71,19 @@ export function Players() {
         }
     }
 
+    async function handlePlayerRemove(playerName: string) {
+        try {
+            await playerRemoveByGroup(playerName, group);
+
+            fetchPlayersByTeam()
+
+        } catch (error) {
+            console.log(error);
+
+            Alert.alert('Remover pessoa', 'Não foi possível remover essa pessoa.');
+        }
+    }
+
     useEffect(() => {
         fetchPlayersByTeam()
     }, [team])
@@ -81,6 +102,10 @@ export function Players() {
                     placeholder="Nome da Pessoa"
                     autoCorrect={false}
                     onChangeText={setNewPlayerName}
+                    value={newPlayerName}
+                    inputRef={newPlayerNameInputRef}
+                    onSubmitEditing={handleAddPlayer}
+                    returnKeyType="done"
                 />
                 <ButtonIcon icon="add" onPress={handleAddPlayer} />
             </Form>
@@ -109,7 +134,7 @@ export function Players() {
                 renderItem={({ item }) => (
                     <PlayerCard
                         name={item.name}
-                        onRemove={() => { }}
+                        onRemove={() => { handlePlayerRemove(item.name) }}
                     />
                 )}
                 ListEmptyComponent={() => (
