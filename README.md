@@ -46,7 +46,6 @@
 O layout da aplicação está disponível no Figma:
 
 ### Mobile
-<img alt="IngniteTeams" title="#IngniteTeams" src="src/assets/Times.png" width="200px">
 <p align="center">
   <img alt="IngniteTeams" title="#IngniteTeams" src="src/assets/Nova turma.png" width="200px">
  <img alt="IngniteTeams" title="#IngniteTeams" src="src/assets/Times.png" width="200px">
